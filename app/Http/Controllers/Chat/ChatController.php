@@ -60,7 +60,7 @@ class ChatController extends Controller
    public function showQuestion(){
        $user_id = Auth::user()->id;
        $thread = Thread::where('user_id',$user_id)->where('status','active')->first();
-       $chats = Chat::where('thread_id',$thread['id'])->get();
+       $chats = Chat::where('thread_id',$thread['id'])->where('user_id',$user_id)->get();
        return response()->json([
            'status' => 'success',
            'message' => 'chats fetched successfully',

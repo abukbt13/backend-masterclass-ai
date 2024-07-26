@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('question');
             $table->text('response');
-            $table->integer('user_id');
-            $table->integer('thread_id');
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('thread_id')->constrained('threads')->cascadeOnDelete();
             $table->timestamps();
         });
     }

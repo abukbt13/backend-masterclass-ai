@@ -19,8 +19,9 @@ class ThreadController extends Controller
     }
     public function ActivateThread($id)
     {
+        $user_id = Auth::user()->id;
         // Set all threads to 'closed' in one query
-        Thread::where('status', '!=', 'closed')->update(['status' => 'closed']);
+        Thread::where('status', '!=', 'closed')->where('user_id',$user_id)->update(['status' => 'closed']);
 
         // Find the specific thread by ID
         $newThread = Thread::find($id);

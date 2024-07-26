@@ -16,9 +16,9 @@ class ChatController extends Controller
        $data = $request->all();
         $user_id = Auth::user()->id;
        if ($data['thread_id']== 0) {
-//           echo "nill";
+//           echo "new";
 //           dd($data);
-//            Perfor== 'null'm actions if thread_id is null
+           Thread::where('status', '!=', 'closed')->where('user_id',$user_id)->update(['status' => 'closed']);
             $newthread = new Thread();
             $newthread->user_id = $user_id;
             $newthread->name = $data['question'];
@@ -26,18 +26,18 @@ class ChatController extends Controller
             $newthread->save();
         }
         else{
-//                       echo "away";
+//            echo "exist";
 //           dd($data);
-//            dd($data['thread_id']);
             $newthread = Thread::where('user_id',$user_id)->where('id',$data['thread_id'])->first();
-            $newthread->status = 'active';
-            $newthread->update();
+//            $newthread->status = 'active';
+//            $newthread->update();
         }
+
 
 
        $question = $data['question'];
 //       $result = OpenAI::chat()->create([
-//           'model' => 'gpt-3.5-turbo',
+//           'model' => 'gpt-4o',
 //           'messages' => [
 //               ['role' => 'user', 'content' => $question],
 //           ],
@@ -47,8 +47,8 @@ class ChatController extends Controller
        $chat['question'] = $question;
        $chat['thread_id'] = $newthread['id'];
        $chat['user_id'] = $user_id;
-//       $chat['response'] = "$result->choices[0]->message->content";
-       $chat['response'] = "expected message";
+//       $chat['response'] = $result->choices[0]->message->content;
+       $chat['response'] = "Good qestion we are going to respond to you sooner";
        $chat->save();
        return response()->json([
            'status' => 'success',
@@ -58,7 +58,8 @@ class ChatController extends Controller
 
    }
    public function showQuestion(){
-       $thread = Thread::where('status','active')->first();
+       $user_id = Auth::user()->id;
+       $thread = Thread::where('user_id',$user_id)->where('status','active')->first();
        $chats = Chat::where('thread_id',$thread['id'])->get();
        return response()->json([
            'status' => 'success',

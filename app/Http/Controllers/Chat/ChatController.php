@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\chatRequest;
 use App\Models\Chat;
 use App\Models\Thread;
+use Cassandra\Date;
 use Illuminate\Support\Facades\Auth;
 use OpenAI\Laravel\Facades\OpenAI;
 
@@ -22,6 +23,7 @@ class ChatController extends Controller
             $newthread = new Thread();
             $newthread->user_id = $user_id;
             $newthread->name = $data['question'];
+            $newthread->thread_date = date('Y-m-d');
             $newthread->status = 'active';
             $newthread->save();
         }

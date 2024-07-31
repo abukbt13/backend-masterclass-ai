@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Thread;
 
 use App\Http\Controllers\Controller;
 use App\Models\Thread;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 
 class ThreadController extends Controller
@@ -47,11 +48,17 @@ class ThreadController extends Controller
 
     public function showThreads(){
         $user_id = Auth::user()->id;
-        $thread = Thread::where('user_id', $user_id)->get();
+        $threads = Thread::where('user_id', $user_id)
+            ->orderBy('thread_date', 'desc')
+            ->get()
+            ->groupBy(function ($item) {
+                return Carbon::parse($item->thread_date)->format('Y-m-d');
+            });
+
         return response()->json([
             'status' => 'success',
             'message' =>'threads retrieved successfully',
-            'threads' => $thread,
+            'threads' => $threads,
         ]);
     }
 }
